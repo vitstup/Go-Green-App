@@ -1,0 +1,179 @@
+﻿@page "/home"
+@using Code;
+@using Code.Meetings;
+@using Code.Models;
+@using Code.BaseComponents;
+
+@inherits BaseSoberTimerPageComponent
+
+<Header></Header>
+<div class="mainContainer baseHorizontalPaddings">
+	
+	<div id="mainTopBlock">
+		<div id="mainTitles">
+			<h3>Hi, @info.currentAccount.name @info.currentAccount.surnmame</h3>
+
+			<h1>Good @GetDayTimeText()</h1>
+		</div>
+		<div id="avatarDiv">
+			<img id="avatar" src="@(info.currentAccount == null ? "images/user.png" : blobUrl)" class="Circle" loading="lazy" />
+		</div>
+	</div>
+
+	<div id="mainBlock">
+		@if (GetMainPageDisplayOption() == displayMainPageOption.withGoal)
+		{
+			<div id="mainBlockVariant1">
+				<div id="counterBlock">
+					<div id="soberDaysBlock">
+						<h3 id="soberText" class="textAlignCenter GrayColorText">
+							You’ve been sober for
+						</h3>
+						<h1 id="saborGoalDaysText" class="textAlignCenter">@GetGoalDays()</h1>
+						<h3 class="textAlignCenter">days</h3>
+						<div id="outerBar">
+							<svg width="120%" height="120%" style="position: absolute; top: -10%; left: -10%;">
+								<defs>
+									<mask id="progressMask">
+										<rect x="0" y="0" width="100%" height="100%" fill="white" />
+										<rect x="0" y="0" width="@($"{100 - GetGoalProgress()}%")" height="100%" fill="black" />
+									</mask>
+								</defs>
+								<image href="images/CircleBar.png" width="100%" height="100%" mask="url(#progressMask)" />
+							</svg>
+						</div>
+					</div>
+				</div>
+
+				<h3 id="progressText" class="textAlignCenter">
+					You Are Making Great Progress
+					<span>@info.currentAccount.name</span>
+				</h3>
+			</div>
+		}
+		else
+		{
+			<div id="mainBlockVariant2">
+				<h3 class="GreenColorText textAlignCenter">You’ve been sober for</h3>
+				<TimerBlock timer="timer" @ref="timerBlockReference"></TimerBlock>
+				<h3 id="progressText2" class="textAlignCenter">
+					You Are Making Great Progress
+					<span class="GreenColorText">@info.currentAccount.name</span>
+				</h3>
+				<p class="ThinGrayColorText textAlignCenter">You can edit your goals and sobriety date incase of a relapse at any time by pressing the button below.</p>
+			</div>
+		}
+		
+	</div>
+
+	<button id="Calculator" class="GreenBg" @onclick="CleanCalculator">
+		<p class="BigBtnText WhiteColorText">Clean Calculator</p>
+	</button>
+
+	<h4 id="shareMyProgess" class="textAlignCenter">Share My Progress</h4>
+
+	<div class="socialNetworksBlock">
+		<a href="https://twitter.com/" class="socialNetworkLink">
+			<img src="images/socialNetworks/bi_twitter.svg" class="socialNetworkImg" />
+		</a>
+		<a href="https://www.instagram.com/" class="socialNetworkLink">
+			<img src="images/socialNetworks/bi_instagram.svg" class="socialNetworkImg" />
+		</a>
+		<a href="https://www.facebook.com/" class="socialNetworkLink">
+			<img src="images/socialNetworks/ri_facebook-fill.svg" class="socialNetworkImg" />
+		</a>
+	</div>
+
+	<button id="findMeetingBtn" @onclick="FindAMeeting">
+		<div id="findMeetingBtnInnerBlock">
+			<div>
+				<img id="findMeetingImg" src="images/findMeeting.png" />
+			</div>
+			<div id="findMeetingTexts">
+				<h4 class="WhiteColorText textAlignLeft">Find A Meeting</h4>
+				<p class="WhiteColorText textAlignLeft">
+					Find a local sobriety meeting near you.
+				</p>
+			</div>
+		</div>
+	</button>
+	
+	<!-- Maybe news block here-->
+
+</div>
+<Menu openedPage="home"></Menu>
+
+@code{
+
+	[Inject] NavigationManager navigationManager { get; set; }
+	[Inject] CurrentInfo info { get; set; }
+	[Inject] IJSRuntime jsRuntime { get; set; }
+
+	private MeetingFinder meetingFinder = new MeetingFinder();
+
+	private TimerBlock timerBlockReference;
+
+	protected override Account GetAccount => info.currentAccount;
+	protected override TimerBlock GetTimerBlock => timerBlockReference;
+
+	string blobUrl;
+
+	private async Task<string> GetBlobUrl(byte[] data, string mimeType)
+	{
+		return await jsRuntime.InvokeAsync<string>("createBlobUrl", data, mimeType);
+	}
+
+	private string GetDayTimeText()
+	{
+		int hour = DateTime.Now.Hour;
+		if (hour >= 20 || hour < 6) return "Night";
+		else if (hour >= 16) return "Evening";
+		else if (hour >= 12) return "Day";
+		else return "Morning";
+	}
+
+	private enum displayMainPageOption
+	{
+		withoutGoal = 0,
+		withGoal = 1,
+	}
+
+	private displayMainPageOption GetMainPageDisplayOption()
+	{
+		if (info.currentAccount.sobrietyGoal < DateTime.Now)
+		{
+			return displayMainPageOption.withoutGoal;
+		}
+		else return displayMainPageOption.withGoal;
+	}
+
+	private int GetGoalDays()
+	{
+		TimeSpan span = info.currentAccount.sobrietyGoal - info.currentAccount.sobrietyDate;
+		return span.Days;
+	}
+
+	private int GetGoalProgress()
+	{
+		TimeSpan needed = info.currentAccount.sobrietyGoal - info.currentAccount.sobrietyDate;
+		TimeSpan fullfielded = info.currentAccount.sobrietyGoal - DateTime.Now;
+		double progressPercentage = (needed - fullfielded).TotalMilliseconds / needed.TotalMilliseconds * 100;
+		return (int)Math.Round(Math.Clamp(progressPercentage, 0, 100));
+	}
+
+	private async Task CleanCalculator()
+	{
+		navigationManager.NavigateTo("/calculator");
+	}
+
+	private async Task FindAMeeting()
+	{
+		await meetingFinder.FindMeeting();
+	}
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		blobUrl = await GetBlobUrl(info.currentAccount.avatar, "image/jpeg");
+		StateHasChanged();
+	}
+}

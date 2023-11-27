@@ -1,0 +1,27 @@
+﻿#mainTitle{
+    margin-top:3vh;
+}
+
+#loginBlock{
+    height:7.4vh;
+    width:100%;
+    display:flex;
+    gap:5vw;
+    margin-top:5vh;
+}
+
+#infoBtn {
+    width: 7.4vh;
+    height:100%;
+    background: linear-gradient(102deg, #FF9090 3.89%, #D85776 84.63%);
+    border: none;
+}
+
+#loginbtn{
+    flex-grow:1;
+}
+
+#CreateAccBlock{
+    width:100%;
+    margin-top:10vh;
+}

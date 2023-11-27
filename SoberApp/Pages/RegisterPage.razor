@@ -1,0 +1,108 @@
+﻿@page "/register"
+@using Code.Databases;
+@using Code.Models;
+@using Code;
+
+<div class="mainContainer baseHorizontalPaddings">
+	<img src="images/icons/mainIcon.svg" class="loginRegisterLogo" />
+
+	<h1 id="mainTitle" class="textAlignCenter">Let’s Get You Back On Track</h1>
+
+	<p class="textAlignCenter ThinGrayColorText">
+		Start tracking your sobriety with our app, register your information below.
+	</p>
+
+	<div class="forms">
+		<div class="BigBtn WhiteBg inputBlock fullWidth">
+			<img src="images/icons/ic_user.svg" class="inputIcon" />
+			<input type="text" class="inputForm noSpaces" placeholder="username" @bind="login" @bind:event="oninput" />
+		</div>
+
+		<div class="BigBtn WhiteBg inputBlock fullWidth">
+			<img src="images/icons/mail.svg" class="inputIcon" />
+			<input type="text" class="inputForm noSpaces" placeholder="email" @bind="mail" @bind:event="oninput" />
+		</div>
+
+		<div class="BigBtn WhiteBg inputBlock fullWidth">
+			<img src="images/icons/ic_password.svg" class="inputIcon" />
+			<input type="password" class="inputForm noSpaces" placeholder="password" @bind="password" @bind:event="oninput" />
+		</div>
+
+		<div class="BigBtn WhiteBg inputBlock fullWidth">
+			<img src="images/icons/date.svg" class="inputIcon" />
+			<input type="date" class="inputForm dateInput"
+				min="@DateTime.Now.AddYears(-100).ToString("yyyy-MM-dd")" 
+				max="@DateTime.Now.ToString("yyyy-MM-dd")" @bind="date" />
+		</div>
+
+	</div>
+
+	<button id="CreateAccBlock" class="BigBtn GreenBg fullWidth">
+		<p class="BigBtnText WhiteColorText" @onclick="CreateAccount">Create my Account</p>
+	</button>
+
+</div>
+
+<script>
+	const passwordInputs = document.querySelectorAll('.noSpaces');
+
+	passwordInputs.forEach(input => {
+		input.addEventListener('keydown', function (event) {
+			if (event.key === ' ') {
+				event.preventDefault();
+			}
+		});
+	});
+</script>
+
+@code{
+	[Inject] NavigationManager navigationManager { get; set; }
+	[Inject] AccountsDb db { get; set; }
+	[Inject] CurrentInfo info { get; set; }
+
+	private string login;
+	private string mail;
+	private string password;
+	private DateTime date = DateTime.Now;
+
+	private async Task CreateAccount()
+	{
+		if (string.IsNullOrWhiteSpace(login))
+		{
+			await App.Current.MainPage.DisplayAlert("Error", "Please enter some login", "Ok");
+			return;
+		}
+		else if (string.IsNullOrWhiteSpace(mail))
+		{
+			await App.Current.MainPage.DisplayAlert("Error", "Please enter some email", "Ok");
+			return;
+		}
+		else if (string.IsNullOrWhiteSpace(password) || password.Length < 8)
+		{
+			await App.Current.MainPage.DisplayAlert("Error", "Please enter password, min length is 8 symbols", "Ok");
+			return;
+		}
+
+		bool alreadyHaveSameLogin = await db.AlreadyHaveThisLogin(login);
+
+		if (alreadyHaveSameLogin)
+		{
+			await App.Current.MainPage.DisplayAlert("Error", "Account with this login already exists", "Ok");
+			return;
+		}
+
+		string hash = password.GetSHA256Hash();
+		Account account = new Account()
+		{
+			login = login,
+			email = mail,
+			password = hash,
+			sobrietyDate = date,
+			name = login,
+		};
+		await db.SaveAccount(account);
+
+		info.SetCurrentAccount(account);
+		navigationManager.NavigateTo("/home");
+	}
+}

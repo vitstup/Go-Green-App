@@ -1,0 +1,15 @@
+﻿#shareProgress {
+    margin: 2vh 0;
+}
+
+#updateText{
+    width:75%;
+    margin: 1vh auto;
+}
+
+#mainPart{
+    margin-top:2vh;
+    display:flex;
+    flex-direction:column;
+    gap:3vh;
+}

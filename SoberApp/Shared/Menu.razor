@@ -1,0 +1,31 @@
+﻿<div id="menu">
+	<button id="menuBtn" class="menuItem @(isNavMenuOpened ? "selectedItem" : "")" @onclick="OpenMenu">
+		<img class="menuIcon" src="images/icons/ic_home.svg" />
+		<h4 class="menuText GreenColorText">@(isNavMenuOpened ? "Close" : "Menu")</h4>
+	</button>
+</div>
+
+<NavMenu IsVisible="@isNavMenuOpened" openedPage="@openedPage"></NavMenu>
+
+<script>
+	function scrollToBottom() {
+		window.scrollTo(0, document.body.scrollHeight);
+	}
+</script>
+
+@code{
+	[Parameter] public string openedPage { get; set; }
+
+	private bool isNavMenuOpened;
+
+	[Inject] IJSRuntime jSRuntime { get; set; }
+
+	private async Task OpenMenu()
+	{
+		isNavMenuOpened = !isNavMenuOpened;
+
+		await Task.Delay(100);
+
+		await jSRuntime.InvokeVoidAsync("scrollToBottom");
+	}
+}

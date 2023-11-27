@@ -1,0 +1,36 @@
+﻿#navMenu{
+    background-color:white;
+    width:100%;
+    padding:5vw;
+}
+
+#navItems {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 2vh;
+}
+
+.navItem{
+    text-align:left;
+    width:100%;
+    border:none;
+    background:none;
+}
+
+#logout{
+    display:flex;
+    gap:2vw;
+}
+
+#logoutImg{
+    height:100%;
+    margin: auto 0;
+}
+
+.selectedNavItem {
+    text-decoration: underline;
+    text-decoration-color: #40B490;
+    text-decoration-thickness: 3px;
+    text-underline-offset: 2vh;
+}

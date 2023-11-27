@@ -1,0 +1,194 @@
+﻿@page "/settings"
+@using Code;
+@using Code.Models;
+@using Code.Databases;
+
+<Header></Header>
+
+<div class="mainContainer baseHorizontalPaddings">
+	<h2 id ="settingsText" class="textAlignCenter">Settigns</h2>
+
+	<div id="previewAcc">
+		<div id="avatarDiv">
+			<img id="ava" class="Circle"
+				 src="@(avatar == null ? "images/user.png" : blobUrl)" />
+			<img src="images/icons/editing.png" id="avaEdit"/>
+			<InputFile id="avaInput" style="display: none;"
+				OnChange="@(async (e) => await HandleAvatarChange(e))"
+			></InputFile>
+			<div class="custom-file-input" onclick="document.getElementById('avaInput').click()"></div>
+		</div>
+		<div id="textInfo">
+			<h1>@info.currentAccount.name @(info.currentAccount.surnmame).</h1>
+			<h3>@info.currentAccount.login</h3>
+		</div>
+	</div>
+
+	<div class="forms">
+		<div class="BigBtn WhiteBg inputBlock fullWidth">
+			<img src="images/icons/ic_user.svg" class="inputIcon" />
+			<input type="text" class="inputForm noSpaces" placeholder="name" @bind="name" @bind:event="oninput" />
+		</div>
+
+		<div class="BigBtn WhiteBg inputBlock fullWidth">
+			<img src="images/icons/ic_user.svg" class="inputIcon" />
+			<input type="text" class="inputForm noSpaces" placeholder="surname" @bind="surname" @bind:event="oninput" />
+		</div>
+
+		<button class="BigBtn GreenBg fullWidth" @onclick="Update">
+			<p class="BigBtnText WhiteColorText">Update</p>
+		</button>
+	</div>
+	<div id ="passForms" class="forms">
+
+		<div class="BigBtn WhiteBg inputBlock fullWidth">
+			<img src="images/icons/ic_password.svg" class="inputIcon" />
+			<input type="password" class="inputForm noSpaces" placeholder="enter password" @bind="password" @bind:event="oninput" />
+		</div>
+		<div class="BigBtn WhiteBg inputBlock fullWidth">
+			<img src="images/icons/ic_password.svg" class="inputIcon" />
+			<input type="password" class="inputForm noSpaces" placeholder="new password" @bind="newPassword" @bind:event="oninput" />
+		</div>
+
+		<button class="BigBtn GreenBg fullWidth" @onclick="ChangePassword">
+			<p class="BigBtnText WhiteColorText">Change Password</p>
+		</button>
+	</div>
+
+	<button id="helpBtn" class="BigBtn WhiteBg fullWidth" @onclick="Help">
+		<p class="BigBtnText GrayColorText">Help</p>
+	</button>
+
+</div>
+
+<Menu openedPage="settings"></Menu>
+
+<script>
+	const passwordInputs = document.querySelectorAll('.noSpaces');
+
+	passwordInputs.forEach(input => {
+		input.addEventListener('keydown', function (event) {
+			if (event.key === ' ') {
+				event.preventDefault();
+			}
+		});
+	});
+</script>
+
+@code{
+	[Inject] private AccountsDb db { get; set; }
+	[Inject] private CurrentInfo info { get; set; }
+	[Inject] private IJSRuntime jsRuntime { get; set; }
+
+	string blobUrl;
+
+	private async Task<string> GetBlobUrl(byte[] data, string mimeType)
+	{
+		return await jsRuntime.InvokeAsync<string>("createBlobUrl", data, mimeType);
+	}
+
+	private string name;
+	private string surname;
+	private string password;
+	private string newPassword;
+
+	private byte[] avatar;
+
+	private async Task Update()
+	{
+		info.currentAccount.name = name;
+		info.currentAccount.surnmame = surname;
+
+		await db.SaveAccount(info.currentAccount);
+
+		await Reload();
+
+		await App.Current.MainPage.DisplayAlert("Personal info changed", "Your personal info was successfully changed", "Ok");
+	}
+
+	private async Task ChangePassword()
+	{
+		if (string.IsNullOrWhiteSpace(password))
+		{
+			await App.Current.MainPage.DisplayAlert("Error", "Please enter your old password", "Ok");
+			return;
+		}
+		if (string.IsNullOrWhiteSpace(newPassword) || newPassword.Length < 8)
+		{
+			await App.Current.MainPage.DisplayAlert("Error", "Please enter new password, min length is 8 symbols", "Ok");
+			return;
+		}
+		if (password.GetSHA256Hash() != info.currentAccount.password)
+		{
+			await App.Current.MainPage.DisplayAlert("Error", "Password that you entered not the same as setted in account previosly", "Ok");
+			return;
+		}
+
+		string hash = newPassword.GetSHA256Hash();
+
+		info.currentAccount.password = hash;
+
+		await db.SaveAccount(info.currentAccount);
+
+		password = string.Empty;
+		newPassword = string.Empty;
+
+		await App.Current.MainPage.DisplayAlert("Success", "Password changed", "Ok");
+
+		await Reload();
+	}
+
+	private async Task Help()
+	{
+		await Launcher.OpenAsync("https://knowledgebase.poppulo.com/articles/How_To/Reset-a-Password?l=en_US&fs=RelatedArticle");
+	}
+
+	private async Task Reload()
+	{
+		StateHasChanged();
+	}
+
+	private async Task HandleAvatarChange(InputFileChangeEventArgs e)
+	{
+		try
+		{
+			var file = e.File;
+			if (file != null)
+			{
+				if (file.Size >= 5000000) await App.Current.MainPage.DisplayAlert("File is big", "Your image file weights more than 5mb, applying changes may take some time, so please wait it's not lagging", "Ok");
+				using var memoryStream = new MemoryStream();
+				await file.OpenReadStream(15000000).CopyToAsync(memoryStream);
+				avatar = memoryStream.ToArray();
+
+				await SaveAvatar();
+			}
+		}
+		catch (Exception ex)
+		{
+			await App.Current.MainPage.DisplayAlert("Error", $"{ex}", "Ok");
+			await App.Current.MainPage.DisplayAlert("Error", "Theare some error occured while importing file, maybe your file's format is wrong", "Ok");
+		}
+	}
+
+	private async Task SaveAvatar()
+	{
+		info.currentAccount.avatar = avatar;
+		await db.SaveAccount(info.currentAccount);
+		blobUrl = await GetBlobUrl(info.currentAccount.avatar, "image/jpeg");
+		await Reload();
+		await App.Current.MainPage.DisplayAlert("Avatar changed", "Your avatar was successfully changed", "Ok");
+	}
+
+	protected override void OnInitialized()
+	{
+		name = info.currentAccount.name;
+		surname = info.currentAccount.surnmame;
+		avatar = info.currentAccount.avatar;
+	}
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		blobUrl = await GetBlobUrl(avatar, "image/jpeg");
+		StateHasChanged();
+	}
+}

@@ -1,0 +1,90 @@
+﻿@page "/calculator"
+@using Code;
+@using Code.Databases;
+@using Code.Models;
+@using Code.BaseComponents;
+
+@inherits BaseSoberTimerPageComponent
+
+
+<Header></Header>
+<div class="mainContainer baseHorizontalPaddings">
+	<h3 class="GreenColorText textAlignCenter">Days Sober</h3>
+	<TimerBlock timer="timer" @ref="timerBlockReference"></TimerBlock>
+
+	<h5 id="shareProgress" class="textAlignCenter">Share My Progress</h5>
+
+	<div class="socialNetworksBlock">
+		<a href="https://twitter.com/" class="socialNetworkLink">
+			<img src="images/socialNetworks/bi_twitter.svg" class="socialNetworkImg" />
+		</a>
+		<a href="https://www.instagram.com/" class="socialNetworkLink">
+			<img src="images/socialNetworks/bi_instagram.svg" class="socialNetworkImg" />
+		</a>
+		<a href="https://www.facebook.com/" class="socialNetworkLink">
+			<img src="images/socialNetworks/ri_facebook-fill.svg" class="socialNetworkImg" />
+		</a>
+	</div>
+
+	<h2 id="updateText" class="textAlignCenter GrayColorText">Update Your Sobriety Date & Goals</h2>
+
+	<div id="mainPart">
+		<div class="BigBtn WhiteBg inputBlock fullWidth">
+			<img src="images/icons/date.svg" class="inputIcon" />
+			<input type="date" class="inputForm dateInput"
+				   min="@DateTime.Now.AddYears(-100).ToString("yyyy-MM-dd")"
+				   max="@DateTime.Now.ToString("yyyy-MM-dd")" @bind="sobrietyDate" />
+		</div>
+		<div class="BigBtn WhiteBg inputBlock fullWidth">
+			<img src="images/icons/date.svg" class="inputIcon" />
+			<input type="date" class="inputForm dateInput"
+				   min="@DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")"
+				   max="@DateTime.Now.AddYears(100).ToString("yyyy-MM-dd")" @bind="goalDate" />
+		</div>
+		<button class="BigBtn GreenBg fullWidth" @onclick="Update">
+			<p class="BigBtnText WhiteColorText">Update</p>
+		</button>
+		<button class="BigBtn GreenBg fullWidth" @onclick="End">
+			<p class="BigBtnText WhiteColorText">I'm in This For Life</p>
+		</button>
+	</div>
+</div>
+
+<Menu openedPage="calculator"></Menu>
+
+@code{
+	[Inject] private NavigationManager navigationManager { get; set; }
+	[Inject] private CurrentInfo info { get; set; }
+	[Inject] private AccountsDb db { get; set; }
+
+	private TimerBlock timerBlockReference;
+
+	protected override Account GetAccount => info.currentAccount;
+	protected override TimerBlock GetTimerBlock => timerBlockReference;
+
+	private DateTime sobrietyDate;
+	private DateTime goalDate;
+
+	private async Task Update()
+	{
+		info.currentAccount.sobrietyDate = sobrietyDate;
+		info.currentAccount.sobrietyGoal = goalDate;
+
+		await db.SaveAccount(info.currentAccount);
+
+		navigationManager.NavigateTo("/home");
+	}
+
+	private async Task End()
+	{
+		string url = "https://www.aa.org/daily-reflections";
+		await Launcher.OpenAsync(url);
+	}
+
+	protected override void OnInitialized()
+	{
+		sobrietyDate = info.currentAccount.sobrietyDate;
+		goalDate = info.currentAccount.sobrietyGoal;
+		base.OnInitialized();
+	}
+}

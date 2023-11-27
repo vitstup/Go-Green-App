@@ -1,0 +1,38 @@
+﻿@page "/"
+
+<div class="mainContainer baseHorizontalPaddings">
+	<img src="images/icons/mainIcon.svg" id ="welcomeLogo"/>
+	<h1 id="mainTitle" class="textAlignCenter">
+		Go <span class="GreenColorText">Green</span> <br /> <span>Stay Clean</span>
+	</h1>
+
+	<h2 class="textAlignCenter">
+		Track your Sobriety With <span class="GreenColorText">Go Green Stay Clean</span>
+	</h2>
+
+	<p class="textAlignCenter">Maintaining sobriety ultimately leading you to a more fulfilling and qualited life </p>
+
+	<div id="Btns">
+		<button class="BigBtn GreenBg fullWidth" @onclick="Login">
+			<p class="BigBtnText WhiteColorText">Login</p>
+		</button>
+
+		<button class="BigBtn WhiteBg fullWidth" @onclick="Register">
+			<p class="BigBtnText LightGrayColorText">Sign Up</p>
+		</button>
+	</div>
+</div>
+
+@code{
+	[Inject] NavigationManager navigationManager { get; set; }
+
+	private async Task Login()
+	{
+		navigationManager.NavigateTo("/login");
+	}
+
+	private async Task Register()
+	{
+		navigationManager.NavigateTo("/register");
+	}
+}

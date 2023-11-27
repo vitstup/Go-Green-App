@@ -1,0 +1,112 @@
+﻿@page "/login"
+@using Code.Databases;
+@using Code.Models;
+@using Code;
+
+<div class="mainContainer baseHorizontalPaddings">
+	<img src="images/icons/mainIcon.svg" class="loginRegisterLogo" />
+
+	<h1 id="mainTitle" class="textAlignCenter">Welcome back</h1>
+
+	<p class="textAlignCenter ThinGrayColorText">
+		Login with your account information below, if you are struggling to login please
+		<span class="GreenColorText">reset your password</span>
+	</p>
+
+	<div class="forms">
+		<div class="BigBtn WhiteBg inputBlock fullWidth">
+			<img src="images/icons/ic_user.svg" class="inputIcon" />
+			<input type="text" class="inputForm noSpaces" placeholder="username" @bind="login" @bind:event="oninput" />
+		</div>
+
+		<div class="BigBtn WhiteBg inputBlock fullWidth">
+			<img src="images/icons/ic_password.svg" class="inputIcon" />
+			<input type="password" class="inputForm noSpaces" placeholder="password" @bind="password" @bind:event="oninput" />
+		</div>
+	</div>
+
+	<div id="loginBlock" class="fullWidth">
+		<button id ="infoBtn" class="Circle" @onclick="Help">
+			<img id="infoIcon" src="images/icons/help-circle.svg" />
+		</button>
+
+		<button id="loginbtn" class="BigBtn GreenBg" @onclick="Login">
+			<p class="WhiteColorText BigBtnText">Login</p>
+		</button>
+	</div>
+
+	<div id="CreateAccBlock">
+		<p class="textAlignCenter">Don’t have an account?</p>
+
+		<button id="createAccBtn" class="BigBtn WhiteBg fullWidth" @onclick="CreateAccount">
+			<p class="BigBtnText LightGrayColorText">Create an Account</p>
+		</button>
+	</div>
+
+</div>
+
+<script>
+	const passwordInputs = document.querySelectorAll('.noSpaces');
+
+	passwordInputs.forEach(input => {
+		input.addEventListener('keydown', function (event) {
+			if (event.key === ' ') {
+				event.preventDefault();
+			}
+		});
+	});
+</script>
+
+@code{
+	[Inject] NavigationManager navigationManager { get; set; }
+	[Inject] AccountsDb db { get; set; }
+	[Inject] CurrentInfo info { get; set; }
+
+	private string login;
+	private string password;
+
+	private async Task Login()
+	{
+		if (string.IsNullOrWhiteSpace(login))
+		{
+			await App.Current.MainPage.DisplayAlert("Error", "Please enter some login", "Ok");
+			return;
+		}
+		else if (string.IsNullOrWhiteSpace(password) || password.Length < 8)
+		{
+			await App.Current.MainPage.DisplayAlert("Error", "Please enter password, min length is 8 symbols", "Ok");
+			return;
+		}
+
+		string hash = password.GetSHA256Hash();
+		var acc = await db.GetAccountByLoginAndPass(login, hash);
+
+		if (acc == null)
+		{
+			await App.Current.MainPage.DisplayAlert("Error", "Unable to log in, check your login/mail or password", "Ok");
+			return;
+		}
+
+		await SecureStorage.SetAsync("login", login);
+		await SecureStorage.SetAsync("password", password);
+
+		info.SetCurrentAccount(acc);
+		navigationManager.NavigateTo("/home");
+	}
+
+	private async Task CreateAccount()
+	{
+		navigationManager.NavigateTo("/register");
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		login = await SecureStorage.GetAsync("login");
+		password = await SecureStorage.GetAsync("password");
+	}
+
+	private async Task Help()
+	{
+		await Launcher.OpenAsync("https://knowledgebase.poppulo.com/articles/How_To/Reset-a-Password?l=en_US&fs=RelatedArticle");
+	}
+}

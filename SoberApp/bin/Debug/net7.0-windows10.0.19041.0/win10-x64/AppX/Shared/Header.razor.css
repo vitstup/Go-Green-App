@@ -1,0 +1,10 @@
+﻿#header{
+    width:100%;
+    background:none;
+}
+
+#icon{
+    height:5vh;
+    display:block;
+    margin: 1vh auto;
+}

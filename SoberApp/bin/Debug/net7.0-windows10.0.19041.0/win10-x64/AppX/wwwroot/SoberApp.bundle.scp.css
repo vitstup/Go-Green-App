@@ -1,0 +1,339 @@
+/* /Pages/AboutPage.razor.rz.scp.css */
+#aboutBlock[b-n42ybfhv8h]{
+    min-height:83vh;
+}
+
+#aboutImg[b-n42ybfhv8h] {
+    height: 20vh;
+    display: block;
+    margin: 2vh auto;
+}
+/* /Pages/Home.razor.rz.scp.css */
+#mainTopBlock[b-tl5xjekb1m]{
+    margin-top:2vh;
+    display:flex;
+    height:12vh;
+}
+
+#avatarDiv[b-tl5xjekb1m] {
+    height: 100%;
+    margin-left: auto;
+}
+
+#avatar[b-tl5xjekb1m] {
+    height:10vh;
+    width:10vh;
+}
+
+#mainBlock[b-tl5xjekb1m] {
+    width: 100%;
+    margin: 2vh 0;
+}
+
+#counterBlock[b-tl5xjekb1m]{
+    height:25vh;
+}
+
+#soberText[b-tl5xjekb1m]{
+    width:25%;
+    font-size:2vh;
+    margin: 0 auto;
+}
+
+#soberDaysBlock[b-tl5xjekb1m] {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 13vh;
+    display: flex;
+    flex-direction: column;
+}
+
+
+#outerBar[b-tl5xjekb1m] {
+    position: absolute;
+    width: 23vh;
+    height: 23vh;
+    top: -40%;
+    left: 50%;
+    transform: translate( -50% );
+    border-radius: 50%;
+    border: 1.5vh solid #E4E4E4;
+}
+
+#innerBar[b-tl5xjekb1m] {
+    position: absolute;
+    top: -10%;
+    left: 50%;
+    transform: translate(-50%);
+    width: 120%;
+    height: 120%;
+    border-radius: 50%;
+    border: 2vh solid green;
+}
+
+.CircleFill[b-tl5xjekb1m] {
+    width: 100%;
+    height: 100%;
+}
+
+#saborGoalDaysText[b-tl5xjekb1m] {
+    margin-bottom: -0.5vh;
+}
+
+#progressText[b-tl5xjekb1m]{
+    margin-top:3vh;
+}
+
+#Calculator[b-tl5xjekb1m]{
+    width: 44%;
+    height: 6vh;
+    border:none;
+    border-radius:25px;
+    margin: 0 auto;
+    display:block;
+}
+
+#shareMyProgess[b-tl5xjekb1m]{
+    margin:2vh 0;
+}
+
+#findMeetingBtn[b-tl5xjekb1m] {
+    display:block;
+    margin: 7vh auto;
+    width: 85%;
+    height: 15vh;
+    border-radius: 16px;
+    background: linear-gradient(103deg, #00AA6E 10.41%, #6ABFA5 102.07%);
+    border:none;
+}
+
+#findMeetingBtnInnerBlock[b-tl5xjekb1m] {
+    position: relative;
+    display: flex;
+    width:100%;
+    height:100%;
+}
+
+
+#findMeetingImg[b-tl5xjekb1m] {
+    height: 100%;
+    display: block;
+    margin-top: -5vh;
+}
+/* /Pages/LoginPage.razor.rz.scp.css */
+#mainTitle[b-gnrgvhdw13]{
+    margin-top:3vh;
+}
+
+#loginBlock[b-gnrgvhdw13]{
+    height:7.4vh;
+    width:100%;
+    display:flex;
+    gap:5vw;
+    margin-top:5vh;
+}
+
+#infoBtn[b-gnrgvhdw13] {
+    width: 7.4vh;
+    height:100%;
+    background: linear-gradient(102deg, #FF9090 3.89%, #D85776 84.63%);
+    border: none;
+}
+
+#loginbtn[b-gnrgvhdw13]{
+    flex-grow:1;
+}
+
+#CreateAccBlock[b-gnrgvhdw13]{
+    width:100%;
+    margin-top:10vh;
+}
+/* /Pages/RegisterPage.razor.rz.scp.css */
+#CreateAccBlock[b-u2imtbbo9a] {
+    width: 100%;
+    margin-top:10vh;
+}
+/* /Pages/SettingsPage.razor.rz.scp.css */
+#avatarDiv[b-hbplqc6n11] {
+    position:relative;
+    height:10vh;
+    width:10vh;
+}
+
+#ava[b-hbplqc6n11] {
+    height: 10vh;
+    width:10vh;
+}
+
+#avaEdit[b-hbplqc6n11]{
+    position:absolute;
+    height:4vh;
+    bottom:0;
+    right:0;
+    z-index:10;
+}
+
+#textInfo[b-hbplqc6n11] {
+    text-align: left;
+}
+
+#passForms[b-hbplqc6n11]{
+    margin-top:7vh;
+}
+
+#previewAcc[b-hbplqc6n11]{
+    display:flex;
+    gap:10vw;
+    margin-bottom:2vh;
+}
+
+#helpBtn[b-hbplqc6n11]{
+    margin-top:4vh;
+}
+
+.custom-file-input[b-hbplqc6n11] {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    z-index: 20;
+}
+
+    .custom-file-input:hover[b-hbplqc6n11] {
+       
+    }
+/* /Pages/SoberCalculatorPage.razor.rz.scp.css */
+#shareProgress[b-dkvpguyn3s] {
+    margin: 2vh 0;
+}
+
+#updateText[b-dkvpguyn3s]{
+    width:75%;
+    margin: 1vh auto;
+}
+
+#mainPart[b-dkvpguyn3s]{
+    margin-top:2vh;
+    display:flex;
+    flex-direction:column;
+    gap:3vh;
+}
+/* /Pages/WelcomePage.razor.rz.scp.css */
+#welcomeLogo[b-vmxxl0op75] {
+    display: block;
+    margin-left:auto;
+    margin-right:auto;
+    margin-top:10vh;
+    height: 15.1vh;
+}
+
+#mainTitle[b-vmxxl0op75]{
+    width:70%;
+    margin-left:auto;
+    margin-right:auto;
+    margin-top:3vh;
+    margin-bottom:7vh;
+}
+
+#Btns[b-vmxxl0op75] {
+    display: flex;
+    flex-direction: column;
+    gap: 2vh;
+    width:100%;
+    margin-top:15vh;
+}
+/* /Shared/Header.razor.rz.scp.css */
+#header[b-k2xvfhfnwl]{
+    width:100%;
+    background:none;
+}
+
+#icon[b-k2xvfhfnwl]{
+    height:5vh;
+    display:block;
+    margin: 1vh auto;
+}
+/* /Shared/MainLayout.razor.rz.scp.css */
+body[b-zc15vhynbv]{
+    overflow:hidden;
+    margin:0;
+    padding:0;
+}
+/* /Shared/Menu.razor.rz.scp.css */
+#menu[b-qp1pq0gcu1]{
+    position: sticky;
+    bottom:0;
+    left:0;
+    background-color:white;
+    display:flex;
+    height:9vh;
+    padding: 0 13vw;
+    width:100%;
+    border-radius: 25px 25px 0 0;
+    justify-content:center;
+    gap: 5vw;
+}
+
+.menuItem[b-qp1pq0gcu1] {
+    display: flex;
+    gap: 2vw;
+    border-radius: 25px;
+    height:85%;
+    margin: auto 0;
+    padding: 0 4vw;
+    border:none;
+    background:none;
+}
+
+.menuIcon[b-qp1pq0gcu1]{
+    height:60%;
+    margin: auto 0;
+}
+
+.menuText[b-qp1pq0gcu1]{
+    margin: auto 0;
+}
+
+.selectedItem[b-qp1pq0gcu1] {
+    background: rgba(64, 180, 144, 0.10);
+}
+/* /Shared/NavMenu.razor.rz.scp.css */
+#navMenu[b-umvqwb3ifc]{
+    background-color:white;
+    width:100%;
+    padding:5vw;
+}
+
+#navItems[b-umvqwb3ifc] {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 2vh;
+}
+
+.navItem[b-umvqwb3ifc]{
+    text-align:left;
+    width:100%;
+    border:none;
+    background:none;
+}
+
+#logout[b-umvqwb3ifc]{
+    display:flex;
+    gap:2vw;
+}
+
+#logoutImg[b-umvqwb3ifc]{
+    height:100%;
+    margin: auto 0;
+}
+
+.selectedNavItem[b-umvqwb3ifc] {
+    text-decoration: underline;
+    text-decoration-color: #40B490;
+    text-decoration-thickness: 3px;
+    text-underline-offset: 2vh;
+}

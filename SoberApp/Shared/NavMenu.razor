@@ -1,0 +1,67 @@
+﻿@using Code;
+@using Code.Meetings;
+
+<div id="navMenu" style="@(IsVisible ? "display: block;" : "display: none;")">
+	<div id="navItems">
+		<button class="navItem @(openedPage == "home" ? "selectedNavItem" : "")" @onclick="GoToHome">
+			<h1>Home</h1>
+		</button>
+		<button class="navItem @(openedPage == "about" ? "selectedNavItem" : "")" @onclick="GoToAbout">
+			<h1>About Us</h1>
+		</button>
+		<button class="navItem" @onclick="FindAMeeting">
+			<h1>Find A Meeting</h1>
+		</button>
+		<button class="navItem @(openedPage == "calculator" ? "selectedNavItem" : "")" @onclick="GoToCalculator">
+			<h1>Sober Calculator</h1>
+		</button>
+		<button class="navItem @(openedPage == "settings" ? "selectedNavItem" : "")" @onclick="GoToSettings">
+			<h1>My Settings</h1>
+		</button>
+		<button id="logout" class="navItem" @onclick="Logout">
+			<img id="logoutImg" src="images/icons/solar_logout-line-duotone.svg"/>
+			<h1>Logout</h1>
+		</button>
+	</div>
+</div>
+
+@code{
+	[Parameter] public bool IsVisible { get; set; }
+	[Parameter] public string openedPage { get; set; }
+
+	[Inject] NavigationManager navigationManager { get; set; }
+	[Inject] CurrentInfo info { get; set; }
+
+	private MeetingFinder meetingFinder = new MeetingFinder();
+
+	private async Task GoToHome()
+	{
+		navigationManager.NavigateTo("/home");
+	}
+
+	private async Task GoToAbout()
+	{
+		navigationManager.NavigateTo("/about");
+	}
+
+	private async Task FindAMeeting()
+	{
+		await meetingFinder.FindMeeting();
+	}
+
+	private async Task GoToCalculator()
+	{
+		navigationManager.NavigateTo("/calculator");
+	}
+
+	private async Task GoToSettings()
+	{
+		navigationManager.NavigateTo("/settings");
+	}
+
+	private async Task Logout()
+	{
+		info.SetCurrentAccount(null);
+		navigationManager.NavigateTo("/");
+	}
+}

@@ -16,7 +16,7 @@
 			<h1>Good @GetDayTimeText()</h1>
 		</div>
 		<div id="avatarDiv">
-			<img id="avatar" src="@(info.currentAccount == null ? "images/user.png" : blobUrl)" class="Circle" loading="lazy" />
+			<img id="avatar" src="@(info.currentAccount.avatar == null ? "images/user.png" : blobUrl)" class="Circle" loading="lazy" />
 		</div>
 	</div>
 
@@ -116,7 +116,7 @@
 	protected override Account GetAccount => info.currentAccount;
 	protected override TimerBlock GetTimerBlock => timerBlockReference;
 
-	string blobUrl;
+	private string blobUrl;
 
 	private async Task<string> GetBlobUrl(byte[] data, string mimeType)
 	{
@@ -173,7 +173,10 @@
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
-		blobUrl = await GetBlobUrl(info.currentAccount.avatar, "image/jpeg");
-		StateHasChanged();
+		if (firstRender)
+		{
+			blobUrl = await GetBlobUrl(info.currentAccount.avatar, "image/jpeg");
+			StateHasChanged();
+		}
 	}
 }

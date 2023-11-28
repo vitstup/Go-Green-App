@@ -1,0 +1,23 @@
+﻿#welcomeLogo {
+    display: block;
+    margin-left:auto;
+    margin-right:auto;
+    margin-top:10vh;
+    height: 15.1vh;
+}
+
+#mainTitle{
+    width:70%;
+    margin-left:auto;
+    margin-right:auto;
+    margin-top:3vh;
+    margin-bottom:7vh;
+}
+
+#Btns {
+    display: flex;
+    flex-direction: column;
+    gap: 2vh;
+    width:100%;
+    margin-top:15vh;
+}

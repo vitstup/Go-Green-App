@@ -80,7 +80,7 @@
 	[Inject] private CurrentInfo info { get; set; }
 	[Inject] private IJSRuntime jsRuntime { get; set; }
 
-	string blobUrl;
+	private string blobUrl;
 
 	private async Task<string> GetBlobUrl(byte[] data, string mimeType)
 	{
@@ -188,7 +188,10 @@
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
-		blobUrl = await GetBlobUrl(avatar, "image/jpeg");
-		StateHasChanged();
+		if (firstRender)
+		{
+			blobUrl = await GetBlobUrl(info.currentAccount.avatar, "image/jpeg");
+			StateHasChanged();
+		}
 	}
 }

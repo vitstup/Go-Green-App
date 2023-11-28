@@ -1,0 +1,9 @@
+﻿#aboutBlock{
+    min-height:83vh;
+}
+
+#aboutImg {
+    height: 20vh;
+    display: block;
+    margin: 2vh auto;
+}
